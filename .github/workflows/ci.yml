@@ -24,6 +24,8 @@ jobs:
     name: Format & Clippy
     runs-on: ubuntu-latest
     steps:
+      - name: check os release
+        run: cat /etc/os-release
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
