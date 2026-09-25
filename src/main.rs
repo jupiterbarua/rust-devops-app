@@ -13,6 +13,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // All config comes from environment variables (12-factor style).
     // Later, Kubernetes ConfigMaps/Secrets will provide these.
+    //
     let database_url = env::var("DATABASE_URL")?;
     let port = env::var("PORT").unwrap_or_else(|_| "8080".into());
 
