@@ -12,8 +12,9 @@ jobs:
             - name: check os release
               run: cat /etc/os-release
             - uses: actions/checkout@v4
-            - uses: EmbarkStudios/cargo-deny-action@v2
+            - uses: taiki-e/install-action@v2
               with:
-                command: check advisories
+                tool: cargo-deny
+            - run: cargo deny check advisories
 
 
