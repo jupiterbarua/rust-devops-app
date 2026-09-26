@@ -11,7 +11,7 @@ jobs:
         steps:
             - name: check os release
               run: cat /etc/os-release
-            - uses: action/checkou@v4
+            - uses: action/checkout@v4
             - uses: EmbarkStudios/cargo-deny-action@v2
               with:
                 commmand: check advisories
