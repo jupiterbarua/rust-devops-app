@@ -1,0 +1,42 @@
+name: Release
+
+on:
+    push: 
+        tags: ["v.*.*.*"]
+
+permissions:
+    contents: read
+    id-token: write
+
+env:
+    AWS_REGION: eu-central-1
+    ECR_REPOSITORY: rust-devops-app
+
+jobs:
+    promote:
+        name: Tag existing image with version
+        runs-on: ubuntu-latest
+        steps:
+            - uses: aws-actions/configure-aws-credentials@v4
+              with:
+                role-to-assume: ${{vars.AWS_ROLE_ARN}}
+                aws-region: ${{env.AWS_REGION}}
+            - id: ecr
+              uses: aws-actions/amazon-ecr-ogin@v2
+            
+            - uses: docker/setup-buildx-action@v3
+
+            - name: Add version tag to the SHA image
+              env: 
+                REGISTRY: ${{ steps.ecr.outputs.registry}}
+              run: |
+                set euo pipefail
+                SOURCE="$REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
+                TARGET="$REGISTRY/$ECR_REPOSITORY:$GITHUB_REF_NAME"
+
+                echo "Checking that $SOURCE exists..."
+                docker buildx imagetools inspect "$SOURCE" > /dev/null
+
+                echo "Tagging as $GITHUB_REF_NAME"
+                docker buildx imagetools create --tag "$TARGET" "$SOURCE"
+
