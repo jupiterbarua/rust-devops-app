@@ -3,6 +3,8 @@ name: dev
 on: 
     push:
         branches: [dev]
+    pull_request:
+        branches: main
 
 permissions:
     contents: read
