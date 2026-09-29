@@ -3,3 +3,7 @@
 NOTES.md
 aws_local.sh
 rust-devops-apps-*.json
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
