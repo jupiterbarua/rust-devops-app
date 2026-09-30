@@ -7,3 +7,4 @@ rust-devops-apps-*.json
 .terraform/
 *.tfstate
 *.tfstate.backup
+terraform.tfvars
