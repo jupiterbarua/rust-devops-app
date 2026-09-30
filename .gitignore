@@ -8,3 +8,4 @@ rust-devops-apps-*.json
 *.tfstate
 *.tfstate.backup
 terraform.tfvars
+s3_bucket_create.sh

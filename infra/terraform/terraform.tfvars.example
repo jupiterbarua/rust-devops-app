@@ -1,0 +1,5 @@
+# Copy this file to terraform.tfvars and fill in your own values.
+# terraform.tfvars is git-ignored; this example file is committed.
+github_owner_id = "12345678"
+github_repo_id  = "987654321"
+alert_email     = "you@example.com"
