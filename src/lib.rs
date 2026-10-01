@@ -31,7 +31,12 @@ pub fn app(state: AppState) -> Router {
         .route("/ready", get(ready))
         .route("/items", get(list_items).post(create_item))
         .route("/items/{id}", get(get_item))
+        .route("/version", get(version))
         .with_state(state)
+}
+
+async fn version() -> &'static str {
+    env!("CARGO_PKG_VERSION")
 }
 
 async fn health() -> &'static str {
