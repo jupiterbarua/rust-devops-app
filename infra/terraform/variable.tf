@@ -19,3 +19,8 @@ variable "github_repo_id" {
   type        = string
   description = "Numeric GitHub repository ID"
 }
+
+variable "alert_email" {
+  type        = string
+  description = "Email address for AWS budget alerts"
+}
