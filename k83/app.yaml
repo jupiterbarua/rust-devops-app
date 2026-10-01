@@ -1,50 +1,62 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: postgres-credentials
+  name: app-config
   namespace: rust-app
 type: Opaque
 stringData:
-  POSTGRES_USER: app
-  POSTGRES_PASSWORD: app        # learning only: throwaway in-cluster database
-  POSTGRES_DB: app
+  DATABASE_URL: postgres://app:app@postgres:5432/app
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: rust-app
   namespace: rust-app
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: postgres
+      app: rust-app
   template:
     metadata:
       labels:
-        app: postgres
+        app: rust-app
     spec:
+      imagePullSecrets:
+        - name: ecr-credentials
       containers:
-        - name: postgres
-          image: postgres:16
+        - name: rust-app
+          image: ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/rust-devops-app:IMAGE_SHA
           ports:
-            - containerPort: 5432
+            - containerPort: 8080
           envFrom:
             - secretRef:
-                name: postgres-credentials
+                name: app-config
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
           readinessProbe:
-            exec:
-              command: ["pg_isready", "-U", "app", "-d", "app"]
+            httpGet:
+              path: /ready
+              port: 8080
             periodSeconds: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: rust-app
   namespace: rust-app
 spec:
   selector:
-    app: postgres
+    app: rust-app
   ports:
-    - port: 5432
-      targetPort: 5432
+    - port: 80
+      targetPort: 8080
