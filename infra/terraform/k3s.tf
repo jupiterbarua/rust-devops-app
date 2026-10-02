@@ -72,3 +72,12 @@ resource "aws_instance" "k3s" {
 
   tags = { Name = "${local.name}-k3s" }
 }
+
+resource "aws_vpc_security_group_ingress_rule" "k3s_http_from_me" {
+  security_group_id = aws_security_group.k3s.id
+  description       = "HTTP from my IP only"
+  ip_protocol       = "tcp"
+  from_port         = 80
+  to_port           = 80
+  cidr_ipv4         = var.my_ip_cidr
+}
