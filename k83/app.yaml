@@ -31,7 +31,7 @@ spec:
         - name: ecr-credentials
       containers:
         - name: rust-app
-          image: ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/rust-devops-app:IMAGE_SHA
+          image: ${ACCOUNT_ID}.dkr.ecr.eu-central-1.amazonaws.com/rust-devops-app:${IMAGE_TAG}
           ports:
             - containerPort: 8080
           envFrom:
