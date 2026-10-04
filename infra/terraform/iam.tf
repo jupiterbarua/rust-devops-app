@@ -73,6 +73,45 @@ resource "aws_iam_role_policy" "ecr_push" {
   })
 }
 
+# Allow GitHub Actions to trigger deployments on the k3s instance via SSM
+resource "aws_iam_role_policy" "ssm_deploy" {
+  name = "ssm-deploy"
+  role = aws_iam_role.github_actions.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "FindInstance"
+        Effect   = "Allow"
+        Action   = "ec2:DescribeInstances"
+        Resource = "*"
+      },
+      {
+        Sid      = "RunShellScriptDocument"
+        Effect   = "Allow"
+        Action   = "ssm:SendCommand"
+        Resource = "arn:aws:ssm:eu-central-1::document/AWS-RunShellScript"
+      },
+      {
+        Sid      = "OnlyOnTheK3sInstance"
+        Effect   = "Allow"
+        Action   = "ssm:SendCommand"
+        Resource = "arn:aws:ec2:eu-central-1:${data.aws_caller_identity.current.account_id}:instance/*"
+        Condition = {
+          StringEquals = { "ssm:resourceTag/Name" = "${local.name}-k3s" }
+        }
+      },
+      {
+        Sid      = "ReadCommandResults"
+        Effect   = "Allow"
+        Action   = ["ssm:GetCommandInvocation", "ssm:ListCommandInvocations"]
+        Resource = "*"
+      },
+    ]
+  })
+}
+
 # One-time import of the resources you created manually with the AWS CLI.
 # After a successful `terraform apply`, delete these three blocks.
 # import {
