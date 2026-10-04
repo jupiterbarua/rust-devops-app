@@ -20,6 +20,7 @@ spec:
         app: {{ .Release.Name }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        checksum/external: {{ .Values.configChecksum | quote }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -33,7 +34,7 @@ spec:
             - containerPort: {{ .Values.containerPort }}
           envFrom:
             - secretRef:
-                name: {{ .Release.Name }}-config
+                name: {{ .Values.existingSecret | default (printf "%s-config" .Release.Name) }}
           livenessProbe:
             httpGet:
               path: /health

@@ -90,3 +90,27 @@ resource "aws_vpc_security_group_ingress_rule" "k3s_http_from_me" {
   to_port           = 80
   cidr_ipv4         = var.my_ip_cidr
 }
+
+# Allow the k3s node to find the database and read its password
+resource "aws_iam_role_policy" "k3s_read_db_secret" {
+  name = "read-db-secret"
+  role = aws_iam_role.k3s_node.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "DescribeDatabase"
+        Effect   = "Allow"
+        Action   = "rds:DescribeDBInstances"
+        Resource = "arn:aws:rds:eu-central-1:${data.aws_caller_identity.current.account_id}:db:${local.name}-db"
+      },
+      {
+        Sid      = "ReadRdsManagedSecret"
+        Effect   = "Allow"
+        Action   = "secretsmanager:GetSecretValue"
+        Resource = "arn:aws:secretsmanager:eu-central-1:${data.aws_caller_identity.current.account_id}:secret:rds!db-*"
+      },
+    ]
+  })
+}
