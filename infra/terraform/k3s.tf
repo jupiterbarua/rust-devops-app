@@ -65,12 +65,21 @@ resource "aws_instance" "k3s" {
   }
 
   # Runs once at first boot: installs k3s
-  user_data = <<-EOF
+  user_data                   = <<-EOF
     #!/bin/bash
+    set -euxo pipefail
+    
     curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644" sh -
-  EOF
+    # Wait until snap is ready after first boot, then install tools
+    snap wait system seed.loaded
+    snap install aws-cli --classic
+    snap install helm --classic
 
-  tags = { Name = "${local.name}-k3s" }
+    # Let Helm find the k3s cluster in every interactive shell
+    echo 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml' >> /etc/bash.bashrc
+  EOF
+  user_data_replace_on_change = true
+  tags                        = { Name = "${local.name}-k3s" }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "k3s_http_from_me" {
