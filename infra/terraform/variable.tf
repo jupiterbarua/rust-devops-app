@@ -24,3 +24,8 @@ variable "alert_email" {
   type        = string
   description = "Email address for AWS budget alerts"
 }
+
+variable "my_ip_cidr" {
+  type        = string
+  description = "Your public IP in CIDR form, e.g. 203.0.113.10/32"
+}

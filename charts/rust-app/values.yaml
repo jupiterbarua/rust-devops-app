@@ -1,0 +1,36 @@
+replicaCount: 2
+
+image:
+  repository: ""   # set at deploy time
+  tag: ""          # set at deploy time
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: ecr-credentials
+
+containerPort: 8080
+
+# Learning only: points to the in-cluster Postgres
+databaseUrl: postgres://app:app@postgres:5432/app
+
+# Name of an existing Secret containing DATABASE_URL.
+# If set, the chart uses it instead of creating its own.
+existingSecret: ""
+
+# Fingerprint of external config; when it changes, pods restart.
+configChecksum: ""
+
+service:
+  port: 80
+
+ingress:
+  enabled: true
+  className: traefik
+  host: ""         # empty = match any host
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 32Mi
+  limits:
+    memory: 128Mi

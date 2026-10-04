@@ -1,0 +1,6 @@
+apiVersion: v2
+name: rust-app
+description: Rust Axum API with PostgreSQL
+type: application
+version: 0.1.0
+appVersion: "0.2.0"

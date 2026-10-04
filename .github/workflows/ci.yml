@@ -96,3 +96,87 @@ jobs:
           tags: ${{ steps.ecr.outputs.registry || 'local' }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to k3s
+    needs: [docker]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.AWS_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: deploy-k3s
+      cancel-in-progress: false
+    env:
+      AWS_REGION: eu-central-1
+      INSTANCE_NAME: rust-devops-k3s
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Find the k3s instance
+        id: instance
+        run: |
+          ID=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=${INSTANCE_NAME}" "Name=instance-state-name,Values=running" \
+            --query 'Reservations[0].Instances[0].InstanceId' --output text)
+          if [ -z "$ID" ] || [ "$ID" = "None" ]; then
+            echo "::notice::No running k3s instance found - skipping deployment."
+            echo "id=" >> "$GITHUB_OUTPUT"
+          else
+            echo "Found instance $ID"
+            echo "id=$ID" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy through SSM Run Command
+        if: steps.instance.outputs.id != ''
+        env:
+          INSTANCE_ID: ${{ steps.instance.outputs.id }}
+        run: |
+          set -euo pipefail
+
+          PARAMS=$(jq -n --arg repo "$GITHUB_REPOSITORY" --arg sha "$GITHUB_SHA" '{
+            commands: [
+              "set -e",
+              "export HOME=/root PATH=$PATH:/snap/bin",
+              "[ -d /opt/rust-devops-app ] || git clone --quiet https://github.com/\($repo).git /opt/rust-devops-app",
+              "cd /opt/rust-devops-app",
+              "git fetch --quiet origin",
+              "git checkout --quiet --force \($sha)",
+              "bash ./scripts/deploy.sh \($sha)"
+            ]
+          }')
+
+          CMD_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name AWS-RunShellScript \
+            --comment "Deploy ${GITHUB_SHA::7}" \
+            --timeout-seconds 900 \
+            --parameters "$PARAMS" \
+            --query Command.CommandId --output text)
+          echo "SSM command: $CMD_ID"
+
+          STATUS=Pending
+          for _ in $(seq 1 60); do
+            sleep 10
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" \
+              --query Status --output text 2>/dev/null || echo Pending)
+            echo "Status: $STATUS"
+            case "$STATUS" in
+              Success|Failed|Cancelled|TimedOut) break ;;
+            esac
+          done
+
+          echo "----- output from the server -----"
+          aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" \
+            --query StandardOutputContent --output text
+          echo "----- errors from the server -----"
+          aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" \
+            --query StandardErrorContent --output text
+
+          [ "$STATUS" = "Success" ]
