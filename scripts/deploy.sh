@@ -95,11 +95,11 @@ print("postgres://{}:{}@{}:{}/{}?sslmode=require".format(
   unset SECRET_JSON
 
   # The in-cluster database is not needed when RDS is used
-  kubectl delete -f k83/postgres.yaml --ignore-not-found
+  kubectl delete -f k8s/postgres.yaml --ignore-not-found
 
 elif grep -q "DBInstanceNotFound" "$RDS_ERR"; then
   echo "==> Database: in-cluster PostgreSQL (no RDS instance found)"
-  kubectl apply -f k83/postgres.yaml
+  kubectl apply -f k8s/postgres.yaml
   kubectl rollout status deployment/postgres --namespace "$NAMESPACE" --timeout=180s
   DATABASE_URL="postgres://app:app@postgres:5432/app"
 
