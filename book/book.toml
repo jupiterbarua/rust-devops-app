@@ -1,0 +1,10 @@
+[book]
+title = "From Cargo to Cluster"
+description = "Building, shipping and running a Rust service on AWS with GitHub Actions, Terraform, Kubernetes and Helm"
+authors = ["Jupiter Barua"]
+language = "en"
+src = "src"
+
+[output.html]
+git-repository-url = "https://github.com/jupiterbarua/rust-devops-app"
+edit-url-template = "https://github.com/jupiterbarua/rust-devops-app/edit/main/book/{path}"

@@ -1,0 +1,12 @@
+# Overrides for EKS. Use with: -f charts/rust-app/values-eks.yaml
+
+# EKS nodes pull from ECR with their IAM role: no pull secret needed
+imagePullSecrets: []
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /ready

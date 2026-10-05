@@ -127,6 +127,15 @@ HELM_ARGS=(
   --set existingSecret="$DB_SECRET_NAME"
   --set configChecksum="$CONFIG_CHECKSUM"
 )
+# Optional: extra values file (e.g. VALUES_FILE=charts/rust-app/values-eks.yaml)
+if [[ -n "${VALUES_FILE:-}" ]]; then
+  HELM_ARGS+=(-f "$VALUES_FILE")
+fi
+
+# Optional: restrict the ALB to one IP range (e.g. ALLOW_CIDR=203.0.113.10/32)
+if [[ -n "${ALLOW_CIDR:-}" ]]; then
+  HELM_ARGS+=(--set-string "ingress.annotations.alb\\.ingress\\.kubernetes\\.io/inbound-cidrs=${ALLOW_CIDR}")
+fi
 
 echo "==> Helm lint"
 helm lint "$CHART_DIR" "${HELM_ARGS[@]}"

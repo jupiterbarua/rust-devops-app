@@ -27,6 +27,7 @@ ingress:
   enabled: true
   className: traefik
   host: ""         # empty = match any host
+  annotations: {}
 
 resources:
   requests:
