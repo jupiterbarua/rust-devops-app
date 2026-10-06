@@ -34,6 +34,17 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --all-targets --locked -- -D warnings
 
+  security:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: EmbarkStudios/cargo-deny-action@3c6349835b2b7b196a839186cb8b78e02f7b5f25 # v2.1.1
+        with:
+          command: check advisories    
+
   test:
     name: Tests (with Postgres)
     runs-on: ubuntu-latest
@@ -62,7 +73,7 @@ jobs:
 
   docker:
     name: Build image (push to ECR on main)
-    needs: [lint, test]
+    needs: [lint, security, test]
     runs-on: ubuntu-latest
     permissions:
       contents: read
