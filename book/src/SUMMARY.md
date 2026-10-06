@@ -5,7 +5,7 @@
 # Part I: The Application
 
 - [The Rust Service](ch01-rust-service.md)
-- [Containers]()
+- [Containers](ch02-containers.md)
 
 # Part II: Continuous Integration
 

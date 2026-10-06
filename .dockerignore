@@ -4,3 +4,8 @@ target
 *.md
 docker-compose.yml
 .env
+book
+infra
+charts
+k8s
+scripts
