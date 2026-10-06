@@ -9,7 +9,7 @@
 
 # Part II: Continuous Integration
 
-- [CI with GitHub Actions]()
+- [CI with GitHub Actions](ch03-ci-github-actions.md)
 - [Pushing to ECR with OIDC]()
 
 # Part III: Infrastructure as Code
