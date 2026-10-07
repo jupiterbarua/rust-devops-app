@@ -40,3 +40,5 @@ metrics:
   serviceMonitor:
     enabled: true
     interval: 15s
+  dashboard:
+    enabled: true

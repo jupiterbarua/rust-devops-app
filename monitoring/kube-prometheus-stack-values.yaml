@@ -37,6 +37,9 @@ grafana:
     enabled: true
     ingressClassName: traefik
   defaultDashboardsTimezone: browser
+  sidecar:
+    dashboards:
+      searchNamespace: ALL
 
 alertmanager:
   alertmanagerSpec:
