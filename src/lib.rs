@@ -142,5 +142,6 @@ async fn create_item(
 
 fn internal_error(err: sqlx::Error) -> StatusCode {
     tracing::error!(error = %err, "database error");
+    metrics::counter!("database_errors_total").increment(1);
     StatusCode::INTERNAL_SERVER_ERROR
 }
