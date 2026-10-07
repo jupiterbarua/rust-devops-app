@@ -1,4 +1,4 @@
-use rust_devops_app::{app, AppState, install_metrics};
+use rust_devops_app::{app, install_metrics, AppState};
 use sqlx::postgres::PgPoolOptions;
 use std::{env, time::Duration};
 use tracing_subscriber::EnvFilter;
@@ -30,7 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{port}")).await?;
     tracing::info!(%port, "server listening");
 
-    axum::serve(listener, app(AppState { pool,metrics }))
+    axum::serve(listener, app(AppState { pool, metrics }))
         .with_graceful_shutdown(shutdown_signal())
         .await?;
     Ok(())
