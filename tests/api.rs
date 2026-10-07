@@ -3,9 +3,16 @@ use axum::{
     http::{Request, StatusCode},
 };
 use http_body_util::BodyExt;
+use metrics_exporter_prometheus::PrometheusBuilder;
 use rust_devops_app::{app, AppState};
 use sqlx::postgres::PgPoolOptions;
 use tower::ServiceExt;
+
+/// Tests use a local recorder handle instead of installing a global one.
+fn test_state(pool: sqlx::PgPool) -> AppState {
+    let metrics = PrometheusBuilder::new().build_recorder().handle();
+    AppState { pool, metrics }
+}
 
 /// Runs without a database: the pool is lazy and never connects.
 #[tokio::test]
@@ -13,7 +20,7 @@ async fn health_returns_ok() {
     let pool = PgPoolOptions::new()
         .connect_lazy("postgres://unused:unused@localhost/unused")
         .unwrap();
-    let res = app(AppState { pool })
+    let res = app(test_state(pool))
         .oneshot(Request::get("/health").body(Body::empty()).unwrap())
         .await
         .unwrap();
@@ -32,7 +39,7 @@ async fn create_and_fetch_item() {
     let url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let pool = PgPoolOptions::new().connect(&url).await.unwrap();
     sqlx::migrate!("./migrations").run(&pool).await.unwrap();
-    let router = app(AppState { pool });
+    let router = app(test_state(pool));
 
     let res = router
         .clone()

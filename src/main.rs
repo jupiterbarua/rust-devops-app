@@ -1,4 +1,4 @@
-use rust_devops_app::{app, AppState};
+use rust_devops_app::{app, install_metrics, AppState};
 use sqlx::postgres::PgPoolOptions;
 use std::{env, time::Duration};
 use tracing_subscriber::EnvFilter;
@@ -24,11 +24,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     sqlx::migrate!("./migrations").run(&pool).await?;
+    // Prometheus metrics, served at /metrics
+    let metrics = install_metrics();
 
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{port}")).await?;
     tracing::info!(%port, "server listening");
 
-    axum::serve(listener, app(AppState { pool }))
+    axum::serve(listener, app(AppState { pool, metrics }))
         .with_graceful_shutdown(shutdown_signal())
         .await?;
     Ok(())
