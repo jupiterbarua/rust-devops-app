@@ -1,0 +1,46 @@
+# Settings for kube-prometheus-stack on k3s.
+
+# k3s runs these control-plane components inside its own process,
+# so they can't be scraped separately. Without this, Prometheus would
+# show them as "down" and fire alerts about them.
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+prometheus:
+  prometheusSpec:
+    retention: 2d
+    # Pick up ServiceMonitors and rules from every Helm release,
+    # not only from this chart (otherwise your app is ignored)
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+
+grafana:
+  admin:
+    existingSecret: grafana-admin
+    userKey: admin-user
+    passwordKey: admin-password
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+  defaultDashboardsTimezone: browser
+
+alertmanager:
+  alertmanagerSpec:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi

@@ -54,7 +54,7 @@ resource "aws_vpc_security_group_egress_rule" "k3s_all_out" {
 # The server
 resource "aws_instance" "k3s" {
   ami                    = data.aws_ssm_parameter.ubuntu.value
-  instance_type          = "t3.small"
+  instance_type          = var.k3s_instance_type
   subnet_id              = aws_subnet.public[0].id
   vpc_security_group_ids = [aws_security_group.k3s.id]
   iam_instance_profile   = aws_iam_instance_profile.k3s_node.name

@@ -35,3 +35,8 @@ resources:
     memory: 32Mi
   limits:
     memory: 128Mi
+
+metrics:
+  serviceMonitor:
+    enabled: true
+    interval: 15s
