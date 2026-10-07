@@ -1,0 +1,53 @@
+{{- if and .Values.metrics.alerts.enabled (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1/PrometheusRule") }}
+{{- $ns := .Release.Namespace }}
+{{- $name := .Release.Name }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ $name }}-alerts
+  labels:
+    app: {{ $name }}
+spec:
+  groups:
+    - name: {{ $name }}.rules
+      rules:
+        # More than 5% of all requests fail with a server error
+        - alert: RustAppHighErrorRate
+          expr: |
+            (sum(rate(http_requests_total{namespace="{{ $ns }}",status=~"5.."}[5m])) or vector(0))
+              /
+            sum(rate(http_requests_total{namespace="{{ $ns }}"}[5m]))
+              > 0.05
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "{{ $name }}: more than 5% of requests are failing"
+            description: '{{`{{ $value | humanizePercentage }}`}} of requests returned a 5xx status over the last 5 minutes.'
+
+        # Fewer pods are ready than the Deployment wants
+        - alert: RustAppPodsNotReady
+          expr: |
+            kube_deployment_status_replicas_available{namespace="{{ $ns }}",deployment="{{ $name }}"}
+              <
+            kube_deployment_spec_replicas{namespace="{{ $ns }}",deployment="{{ $name }}"}
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $name }}: not all pods are ready"
+            description: 'Only {{`{{ $value }}`}} pod(s) are available. Check readiness probes and the database.'
+
+        # Prometheus cannot scrape any pod at all
+        - alert: RustAppDown
+          expr: |
+            sum(up{namespace="{{ $ns }}",service="{{ $name }}"}) == 0
+              or
+            absent(up{namespace="{{ $ns }}",service="{{ $name }}"})
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "{{ $name }}: no pod can be scraped"
+            description: "Prometheus has not reached any {{ $name }} pod for at least 1 minute."
+{{- end }}

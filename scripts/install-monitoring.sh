@@ -53,6 +53,7 @@ helm upgrade --install "$RELEASE" "$CHART" \
   -f "$VALUES_FILE" \
   --set "grafana.ingress.hosts[0]=grafana.${IP}.nip.io" \
   --set "prometheus.ingress.hosts[0]=prometheus.${IP}.nip.io" \
+  --set "alertmanager.ingress.hosts[0]=alertmanager.${IP}.nip.io" \
   --wait \
   --timeout 10m
 
@@ -67,3 +68,4 @@ echo "Grafana password:"
 echo "  kubectl get secret grafana-admin -n $NAMESPACE -o jsonpath='{.data.admin-password}' | base64 -d; echo"
 echo
 echo "Next: run ./scripts/deploy.sh so the app's ServiceMonitor is created."
+echo "Alertmanager: http://alertmanager.${IP}.nip.io"
