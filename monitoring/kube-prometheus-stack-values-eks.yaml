@@ -17,6 +17,7 @@ grafana:
 prometheus:
   ingress:
     ingressClassName: alb
+    pathType: Prefix
     hosts: []
     annotations:
       alb.ingress.kubernetes.io/scheme: internet-facing
@@ -26,6 +27,7 @@ prometheus:
 alertmanager:
   ingress:
     ingressClassName: alb
+    pathType: Prefix
     hosts: []
     annotations:
       alb.ingress.kubernetes.io/scheme: internet-facing

@@ -30,6 +30,10 @@ for cmd in kubectl helm curl openssl; do
 done
 
 echo "==> Platform: $PLATFORM (cluster: $(kubectl config current-context))"
+if ! kubectl cluster-info >/dev/null 2>&1; then
+  echo "Error: cannot reach a Kubernetes cluster. Check KUBECONFIG." >&2
+  exit 1
+fi
 
 # --- Platform-specific Helm arguments --------------------------------------------
 HELM_ARGS=(-f "$VALUES_FILE")
