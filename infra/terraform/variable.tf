@@ -35,3 +35,9 @@ variable "k3s_instance_type" {
   description = "EC2 instance type for the k3s node"
   default     = "t3.small"
 }
+
+variable "eks_node_instance_type" {
+  type        = string
+  description = "EC2 instance type for EKS worker nodes"
+  default     = "t3.small"
+}

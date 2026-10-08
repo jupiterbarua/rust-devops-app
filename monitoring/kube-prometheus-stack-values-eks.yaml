@@ -1,0 +1,33 @@
+# Overrides for Amazon EKS. Used together with kube-prometheus-stack-values.yaml:
+#   PLATFORM=eks ALLOW_CIDR=<your-ip>/32 ./scripts/install-monitoring.sh
+#
+# EKS has no Traefik. Each web UI gets its own internet-facing ALB through the
+# AWS Load Balancer Controller, reachable by the ALB's DNS name (no host names).
+# The script adds inbound-cidrs so only your IP can reach them.
+
+grafana:
+  ingress:
+    ingressClassName: alb
+    hosts: []
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/healthcheck-path: /api/health
+
+prometheus:
+  ingress:
+    ingressClassName: alb
+    hosts: []
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/healthcheck-path: /-/ready
+
+alertmanager:
+  ingress:
+    ingressClassName: alb
+    hosts: []
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/healthcheck-path: /-/ready
