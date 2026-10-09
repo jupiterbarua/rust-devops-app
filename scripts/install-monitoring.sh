@@ -53,6 +53,10 @@ case "$PLATFORM" in
       echo "Error: on EKS, set ALLOW_CIDR to your IP, e.g. ALLOW_CIDR=203.0.113.10/32" >&2
       exit 1
     fi
+    if [[ ! "$ALLOW_CIDR" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}/[0-9]{1,2}$ ]]; then
+      echo "Error: ALLOW_CIDR '$ALLOW_CIDR' is not a valid IPv4 CIDR like 203.0.113.10/32" >&2
+      exit 1
+    fi
     HELM_ARGS+=(-f "$EKS_VALUES_FILE")
     for ui in grafana prometheus alertmanager; do
       HELM_ARGS+=(--set-string "${ui}.ingress.annotations.alb\\.ingress\\.kubernetes\\.io/inbound-cidrs=${ALLOW_CIDR}")
