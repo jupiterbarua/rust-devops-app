@@ -10,11 +10,11 @@
 # Part II: Continuous Integration
 
 - [CI with GitHub Actions](ch03-ci-github-actions.md)
-- [Pushing to ECR with OIDC]()
+- [Pushing to ECR with OIDC](ch04-ecr-oidc.md)
 
 # Part III: Infrastructure as Code
 
-- [Terraform Foundations]()
+- [Terraform Foundations](ch05-terraform-foundations.md)
 - [Networking and the Database]()
 
 # Part IV: Kubernetes
