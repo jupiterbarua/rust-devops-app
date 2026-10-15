@@ -1,0 +1,13 @@
+{{- if .Values.metrics.dashboard.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-dashboard
+  labels:
+    app: {{ .Release.Name }}
+    # The Grafana sidecar loads every ConfigMap with this label as a dashboard
+    grafana_dashboard: "1"
+data:
+  rust-app.json: |-
+{{ .Files.Get "dashboards/rust-app.json" | indent 4 }}
+{{- end }}
