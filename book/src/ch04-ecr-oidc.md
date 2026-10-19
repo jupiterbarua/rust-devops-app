@@ -9,6 +9,18 @@ This chapter also contains the hardest debugging session of the whole project.
 It is told here in full, because the way to the fix teaches more than the fix
 itself.
 
+> **Time and typing**
+>
+> | | |
+> |---|---|
+> | Reading | 30 min |
+> | Hands-on | 60–90 min, most of it reading error messages if the trust policy is wrong |
+> | Practice | 1 h |
+> | Cost | a few cents per month for stored images |
+>
+> **Copy:** the workflow job and the permissions policy.
+> **Type yourself:** the `Condition` block of the trust policy (Step 5, about 10 lines). It is the security boundary of the whole pipeline.
+
 ## The idea: why not just use access keys?
 
 The quick way to let GitHub Actions talk to AWS is to create an IAM user,
@@ -499,15 +511,15 @@ immutable tags, that is expected: nothing is broken.
 
 ## Practice
 
-1. Add an ECR **lifecycle policy** that keeps only the last 20 tagged images.
+1. **(20 min)** Add an ECR **lifecycle policy** that keeps only the last 20 tagged images.
    Make sure it cannot delete images referenced by an index.
-2. Add a `refs/heads/dev` line to the trust policy, and a job that pushes
+2. **(30 min)** Add a `refs/heads/dev` line to the trust policy, and a job that pushes
    `dev-<sha>` images from the `dev` branch. What would you change to clean them
    up automatically?
-3. Read the decoded OIDC token claims in a workflow (the
+3. **(20 min)** Read the decoded OIDC token claims in a workflow (the
    `actions/github-script` action can request a token) and find the `sub`,
    `aud`, `repository_id`, and `ref` claims yourself.
-4. Try the release workflow with a tag on a commit that never went through `main`.
+4. **(10 min)** Try the release workflow with a tag on a commit that never went through `main`.
    Read the error from `imagetools inspect`.
 
 ## Interview questions

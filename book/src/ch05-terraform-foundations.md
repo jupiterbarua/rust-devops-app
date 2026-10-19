@@ -13,6 +13,18 @@ resources from the previous chapter, move Terraform's memory into S3, learn how
 to keep account-specific values out of a public repository, and create your
 first new resource: a budget alert.
 
+> **Time and typing**
+>
+> | | |
+> |---|---|
+> | Reading | 40 min |
+> | Hands-on | 90 min |
+> | Practice | 1–1.5 h |
+> | Cost | free (a budget alert costs nothing) |
+>
+> **Copy:** `iam.tf` and `budget.tf`.
+> **Type yourself:** `versions.tf`, `backend.tf` and the `import` blocks (about 30 lines). They are the parts you write at the start of every Terraform project.
+
 ## The idea
 
 Terraform works in a loop that you will repeat hundreds of times:
@@ -577,17 +589,17 @@ and profile as the CLI.
 
 ## Practice
 
-1. Add an ECR **lifecycle policy** (`aws_ecr_lifecycle_policy`) that expires images
+1. **(15 min)** Add an ECR **lifecycle policy** (`aws_ecr_lifecycle_policy`) that expires images
    beyond the 30 most recent. Read the plan before applying.
-2. Rename `aws_ecr_repository.app` to `aws_ecr_repository.service` in the code
+2. **(15 min)** Rename `aws_ecr_repository.app` to `aws_ecr_repository.service` in the code
    only. Run `plan` and see the destroy/create. Then add a `moved` block and plan
    again.
-3. Add an `output "ecr_repository_url"` and print it with
+3. **(5 min)** Add an `output "ecr_repository_url"` and print it with
    `terraform output -raw ecr_repository_url`.
-4. Change the budget's first threshold to 25% using a new variable
+4. **(15 min)** Change the budget's first threshold to 25% using a new variable
    `budget_warning_percent` with a default. Run `plan` with
    `-var budget_warning_percent=10` and compare.
-5. Open your state file in S3, or run `terraform state list` and
+5. **(10 min)** Open your state file in S3, or run `terraform state list` and
    `terraform state show aws_ecr_repository.app`. What information does state
    hold that the code does not?
 

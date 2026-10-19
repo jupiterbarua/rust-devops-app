@@ -87,9 +87,15 @@ chapter follows the same pattern:
 5. **Practice:** exercises to do on your own.
 6. **Interview questions:** questions you should be able to answer afterwards.
 
-Type the code yourself rather than copying it. It is slower, but you will
-remember far more, and you will make (and fix) the same small mistakes that
-happen in real projects.
+Every chapter starts with a **Time and typing** box: how long the reading,
+hands-on part and practice take, what it costs, which files you can simply
+copy, and the few lines worth typing yourself. Nobody types a whole workflow
+file or Terraform module from scratch in a real job; you start from something
+that works and change it. What you do need is to understand every line, and
+typing the small, important parts (a trust policy condition, a security group
+rule, a graceful shutdown) is the fastest way to get there. The practice
+exercises are timed too, and most of them are "change two lines, run `plan`,
+and explain what happened".
 
 ## A word about cost
 
