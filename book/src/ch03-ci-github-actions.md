@@ -10,6 +10,18 @@ without passing them. In this chapter, you build that pipeline with GitHub
 Actions, and you secure it the way professional teams do: pinned actions,
 least-privilege permissions, and automatic updates.
 
+> **Time and typing**
+>
+> | | |
+> |---|---|
+> | Reading | 30 min |
+> | Hands-on | 45 min (the first CI run takes about 10 min) |
+> | Practice | 1–1.5 h |
+> | Cost | free for public repositories |
+>
+> **Copy:** the jobs in `.github/workflows/ci.yml`.
+> **Type yourself:** the `on:`, `permissions:` and `concurrency:` blocks (about 15 lines). They decide when the pipeline runs and what it may do.
+
 ## The idea
 
 A GitHub Actions setup has three levels:
@@ -484,15 +496,15 @@ same branch with a pull request open. Each matching trigger starts its own run.
 
 ## Practice
 
-1. Add a `shellcheck` job that lints shell scripts once you have some in a
+1. **(15 min)** Add a `shellcheck` job that lints shell scripts once you have some in a
    `scripts/` folder. ShellCheck is preinstalled on GitHub's Ubuntu runners.
-2. Add an [actionlint](https://github.com/rhysd/actionlint) step that checks your
+2. **(10 min)** Add an [actionlint](https://github.com/rhysd/actionlint) step that checks your
    workflow files themselves.
-3. Find the SHA for `taiki-e/install-action` yourself with `git ls-remote`, and
+3. **(20 min)** Find the SHA for `taiki-e/install-action` yourself with `git ls-remote`, and
    use it to install `cargo-nextest`. Then switch the test job to `cargo nextest run`.
-4. Add a `paths-ignore` filter so the workflow does not run when only Markdown
+4. **(10 min)** Add a `paths-ignore` filter so the workflow does not run when only Markdown
    files change. What are the risks of path filters on required checks?
-5. Use a `strategy.matrix` to run the test job on both `stable` and `beta` Rust.
+5. **(15 min)** Use a `strategy.matrix` to run the test job on both `stable` and `beta` Rust.
 
 ## Interview questions
 

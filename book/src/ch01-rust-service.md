@@ -10,6 +10,18 @@ logs, exposes health endpoints for Kubernetes, shuts down gracefully, and has
 both unit and integration tests. Every one of these choices pays off in a later
 chapter.
 
+> **Time and typing**
+>
+> | | |
+> |---|---|
+> | Reading | 30 min |
+> | Hands-on | 60–90 min (the first `cargo build` takes about 5 min) |
+> | Practice | 2–3 h |
+> | Cost | free (everything runs on your laptop) |
+>
+> **Copy:** `Cargo.toml`, the handlers in `src/lib.rs`, and `tests/api.rs`.
+> **Type yourself:** the migration (Step 2, 5 lines) and `src/main.rs` (Step 4): configuration, logging and graceful shutdown are the parts you will meet again in every chapter.
+
 ## The idea
 
 The API has a handful of endpoints:
@@ -500,14 +512,14 @@ the first time.
 
 ## Practice
 
-1. Add a `DELETE /items/{id}` endpoint that returns `204 No Content` when an item
+1. **(45 min)** Add a `DELETE /items/{id}` endpoint that returns `204 No Content` when an item
    was deleted and `404` when it did not exist. Write an integration test for it.
-2. Add a `created_at TIMESTAMPTZ NOT NULL DEFAULT now()` column with a **new**
+2. **(30 min)** Add a `created_at TIMESTAMPTZ NOT NULL DEFAULT now()` column with a **new**
    migration file, and include it in the JSON response. (Hint: the `chrono` or
    `time` feature of sqlx.)
-3. Start the service with `RUST_LOG=debug cargo run` and compare the logs with
+3. **(5 min)** Start the service with `RUST_LOG=debug cargo run` and compare the logs with
    the default level.
-4. Change `/ready` so it also returns `503` while the server is shutting down.
+4. **(30 min)** Change `/ready` so it also returns `503` while the server is shutting down.
    Think about why that could be useful during a Kubernetes deployment.
 
 ## Interview questions

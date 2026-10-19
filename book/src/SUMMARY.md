@@ -15,7 +15,7 @@
 # Part III: Infrastructure as Code
 
 - [Terraform Foundations](ch05-terraform-foundations.md)
-- [Networking and the Database]()
+- [Networking and the Database](ch06-networking-database.md)
 
 # Part IV: Kubernetes
 
@@ -25,6 +25,11 @@
 - [Amazon EKS]()
 - [Load Balancing with the AWS Load Balancer Controller]()
 
-# Part V: Wrapping Up
+# Part V: Operations
+
+- [Monitoring with Prometheus and Grafana]()
+- [Alerts]()
+
+# Part VI: Wrapping Up
 
 - [Lessons Learned and Costs]()

@@ -10,6 +10,18 @@ that contains the compiled program and everything it needs to run, and nothing
 else. The same image then runs on your laptop, in CI, on a Kubernetes node in
 AWS, anywhere Docker or Kubernetes runs.
 
+> **Time and typing**
+>
+> | | |
+> |---|---|
+> | Reading | 20 min |
+> | Hands-on | 45 min (the first image build takes about 10 min) |
+> | Practice | 1–2 h |
+> | Cost | free |
+>
+> **Copy:** `.dockerignore` and `docker-compose.yml`.
+> **Type yourself:** the `Dockerfile` (Step 2, about 40 lines). It is short, and every line is a decision you should be able to explain.
+
 ## The idea
 
 Three terms are worth getting straight first:
@@ -405,18 +417,18 @@ changing, often because `target` or `.git` is missing from `.dockerignore`.
 
 ## Practice
 
-1. Write a naive single-stage Dockerfile (`FROM rust:1`, copy, build, run) as
+1. **(20 min)** Write a naive single-stage Dockerfile (`FROM rust:1`, copy, build, run) as
    `Dockerfile.naive`, build it with `docker build -f Dockerfile.naive -t naive .`,
    and compare its size with your multi-stage image.
-2. Change the `ENTRYPOINT` to the shell form, rebuild, and run `docker compose stop api`.
+2. **(10 min)** Change the `ENTRYPOINT` to the shell form, rebuild, and run `docker compose stop api`.
    Does the shutdown log line still appear? How long does the stop take? (Docker
    waits 10 seconds before force-killing a container that ignores `SIGTERM`.)
-3. Scan your image for known vulnerabilities with
+3. **(10 min)** Scan your image for known vulnerabilities with
    [Trivy](https://github.com/aquasecurity/trivy): `trivy image rust-devops-app:local`.
    Compare the result with a scan of `rust:1`.
-4. Add a `pgadmin` or `adminer` service to `docker-compose.yml` to browse the
+4. **(15 min)** Add a `pgadmin` or `adminer` service to `docker-compose.yml` to browse the
    database in your web browser.
-5. Research static linking with the `x86_64-unknown-linux-musl` target and the
+5. **(20 min, reading)** Research static linking with the `x86_64-unknown-linux-musl` target and the
    `scratch` base image. What are the advantages and the trade-offs compared with
    distroless?
 
