@@ -19,7 +19,7 @@
 
 # Part IV: Kubernetes
 
-- [Kubernetes on k3s]()
+- [Kubernetes on k3s](ch07-kubernetes-k3s.md)
 - [Packaging with Helm]()
 - [Continuous Deployment]()
 - [Amazon EKS]()

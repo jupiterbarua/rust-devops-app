@@ -1,0 +1,78 @@
+# Plain manifests for Chapter 7. Apply with:
+#   sed "s|IMAGE_PLACEHOLDER|$IMAGE|" k8s/app.yaml | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rust-app
+  labels:
+    app: rust-app
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: rust-app
+  template:
+    metadata:
+      labels:
+        app: rust-app
+    spec:
+      imagePullSecrets:
+        - name: ecr-credentials
+      containers:
+        - name: app
+          image: IMAGE_PLACEHOLDER
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: rust-app-db
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rust-app
+spec:
+  selector:
+    app: rust-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rust-app
+spec:
+  ingressClassName: traefik
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rust-app
+                port:
+                  number: 80
