@@ -16,7 +16,7 @@ jobs:
         steps:
             - name: check os release
               run: cat /etc/os-release
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v7
             - uses: taiki-e/install-action@v2
               with:
                 tool: cargo-deny
