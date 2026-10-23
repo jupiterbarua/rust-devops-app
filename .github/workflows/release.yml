@@ -30,7 +30,7 @@ jobs:
               env: 
                 REGISTRY: ${{ steps.ecr.outputs.registry}}
               run: |
-                set euo pipefail
+                set -euo pipefail
                 SOURCE="$REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
                 TARGET="$REGISTRY/$ECR_REPOSITORY:$GITHUB_REF_NAME"
 
