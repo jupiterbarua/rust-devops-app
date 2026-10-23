@@ -408,6 +408,11 @@ The rule for this server: **never edit files here.** Change code on your
 laptop, push, and run `git pull` on the server. Otherwise the server and the
 repository drift apart, and the next `git pull` ends in a conflict.
 
+> **Where to run the commands.** From here to the end of Step 10, every command
+> runs in the **Session Manager terminal on the server**, unless the step says
+> **on your laptop**. If you reconnect, start with `bash` and
+> `cd ~/rust-devops-app` again.
+
 ## Step 4: Your first pod, by hand
 
 Before writing any YAML, see the basic loop with one command:
@@ -601,7 +606,9 @@ allowed to read it, but Kubernetes does not use the node's AWS credentials on
 its own. It needs a **pull secret**: a Secret of type
 `kubernetes.io/dockerconfigjson` containing a registry login.
 
-Paste this block:
+Paste this block into the **Session Manager terminal on the server** (the same
+terminal as Step 5, in the `rust-devops-app` folder). It is not a file; you run
+it as commands:
 
 ```bash
 REGION=eu-central-1
