@@ -22,7 +22,7 @@
 - [Kubernetes on k3s](ch07-kubernetes-k3s.md)
 - [Packaging with Helm](ch08-helm.md)
 - [Continuous Deployment](ch09-continuous-deployment.md)
-- [Amazon EKS]()
+- [Amazon EKS](ch10-eks.md)
 - [Load Balancing with the AWS Load Balancer Controller]()
 
 # Part V: Operations
