@@ -17,14 +17,14 @@ jobs:
         name: Tag existing image with version
         runs-on: ubuntu-latest
         steps:
-            - uses: aws-actions/configure-aws-credentials@v4
+            - uses: aws-actions/configure-aws-credentials@v6
               with:
                 role-to-assume: ${{vars.AWS_ROLE_ARN}}
                 aws-region: ${{env.AWS_REGION}}
             - id: ecr
               uses: aws-actions/amazon-ecr-login@v2
             
-            - uses: docker/setup-buildx-action@v3
+            - uses: docker/setup-buildx-action@v4
 
             - name: Add version tag to the SHA image
               env: 
