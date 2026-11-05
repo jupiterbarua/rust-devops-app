@@ -472,13 +472,36 @@ load balancer can send traffic **straight to the pods**, skipping the node.
 ## Step 7: Deploy the application
 
 The deploy script already supports EKS. Only two things differ from k3s, and
-`charts/rust-app/values-eks.yaml` (Chapter 8, Step 9) covers both:
+one small values file covers both. If you are building the project yourself,
+create `charts/rust-app/values-eks.yaml` **on your laptop**, next to
+`values.yaml` (in the finished repository it already exists):
 
-- `imagePullSecrets: []`: the nodes pull from ECR with their IAM role.
-- `ingress.className: alb`: the AWS Load Balancer Controller, which you install
-  in Chapter 11.
+```yaml
+# Overrides for EKS. Use with: -f charts/rust-app/values-eks.yaml
 
-Run it with the EKS kubeconfig and the values file:
+# EKS nodes pull from ECR with their IAM role: no pull secret needed
+imagePullSecrets: []
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /ready
+```
+
+It contains **only the differences** from `values.yaml`; everything else comes
+from the defaults (Chapter 8, Step 9 explains how the files are merged):
+
+- `imagePullSecrets: []`: the nodes pull from ECR with their IAM role, so the
+  chart renders no pull secret. The list replaces the default list completely.
+- `ingress.className: alb`: the Ingress is handled by the AWS Load Balancer
+  Controller instead of Traefik. You install it in Chapter 11, together with
+  the meaning of the three annotations. Until then, the Ingress simply waits.
+
+Commit and push the file, then `git pull` on the admin host. Run the deploy
+script with the EKS kubeconfig and the values file:
 
 ```bash
 KUBECONFIG=~/.kube/eks.yaml VALUES_FILE=charts/rust-app/values-eks.yaml ./scripts/deploy.sh
