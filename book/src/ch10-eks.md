@@ -525,10 +525,21 @@ Service:
 
 ```bash
 kubectl port-forward -n rust-app svc/rust-app 8080:80 &
-curl -s localhost:8080/health
-curl -s localhost:8080/items
+sleep 3                                       # give the tunnel time to open
+curl -sS -m 5 -w '\nHTTP %{http_code}\n' localhost:8080/health
+curl -sS -m 5 -w '\nHTTP %{http_code}\n' localhost:8080/items
 kill %1
 ```
+
+`&` starts `port-forward` in the background, and the next line runs at once.
+Without the `sleep`, `curl` is faster than the tunnel and gets nothing back.
+`-m 5` stops `curl` after 5 seconds instead of waiting forever, and `-w`
+prints the HTTP status, so an empty answer and an error look different.
+
+If `curl` times out although the tunnel says `Forwarding from 127.0.0.1:8080`,
+the tunnel works, but no pod answers. Check
+`kubectl get pods,endpoints -n rust-app`: the pods must be `1/1` ready, and
+the Service must have endpoints.
 
 `port-forward` tunnels through the Kubernetes API, so it works without any load
 balancer. It is the standard way to reach a service that is not exposed, for

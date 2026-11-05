@@ -23,7 +23,7 @@
 - [Packaging with Helm](ch08-helm.md)
 - [Continuous Deployment](ch09-continuous-deployment.md)
 - [Amazon EKS](ch10-eks.md)
-- [Load Balancing with the AWS Load Balancer Controller]()
+- [Load Balancing with the AWS Load Balancer Controller](ch11-load-balancing.md)
 
 # Part V: Operations
 
