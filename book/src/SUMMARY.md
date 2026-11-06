@@ -27,9 +27,9 @@
 
 # Part V: Operations
 
-- [Monitoring with Prometheus and Grafana]()
-- [Alerts]()
+- [Monitoring with Prometheus and Grafana](ch12-monitoring.md)
+- [Alerts](ch13-alerts.md)
 
 # Part VI: Wrapping Up
 
-- [Lessons Learned and Costs]()
+- [Lessons Learned and Costs](ch14-lessons-learned.md)
