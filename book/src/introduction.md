@@ -152,4 +152,11 @@ The examples use placeholders where you need your own values:
 Never commit your real account ID, IP address, or any credentials to a public
 repository. The book shows how to keep them out of Git.
 
+## About this book
+
+This book was written with the help of Claude, an AI assistant by Anthropic.
+The project, the infrastructure and every error in the Troubleshooting sections
+are real: I built and debugged them, and Claude helped turn the work into
+chapters.
+
 Let's start with the application.
